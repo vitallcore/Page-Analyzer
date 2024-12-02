@@ -8,14 +8,14 @@ repository = "https://github.com/vitallcore/python-project-83"
 classifiers = [
     "Framework :: Flask",
     "Natural Language :: Russian",
-    "Programming Language :: Python :: 3.12"
+    "Programming Language :: Python :: 3.10"
 ]
 packages = [
   { include = "page_analyzer" },
 ]
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.10"
 flask = "^3.0.3"
 gunicorn = "^22.0.0"
 python-dotenv = "^1.0.1"
