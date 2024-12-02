@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "hexlet-code"
+version = "0.1.0"
+description = "Page Analyzer is a simple web application that checks the basic page-level elements of websites valuable for on-page SEO."
+authors = ["vitallcore <vitaslipknot@gmail.com>"]
+readme = "README.md"
+repository = "https://github.com/vitallcore/python-project-83"
+classifiers = [
+    "Framework :: Flask",
+    "Natural Language :: Russian",
+    "Programming Language :: Python :: 3.12"
+]
+packages = [
+  { include = "page_analyzer" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.0.3"
+gunicorn = "^22.0.0"
+python-dotenv = "^1.0.1"
+psycopg2-binary = "^2.9.9"
+validators = "^0.28.3"
+requests = "^2.32.3"
+beautifulsoup4 = "^4.12.3"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
