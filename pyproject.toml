@@ -4,28 +4,28 @@ version = "0.1.0"
 description = "Page Analyzer is a simple web application that checks the basic page-level elements of websites valuable for on-page SEO."
 authors = ["vitallcore <vitaslipknot@gmail.com>"]
 readme = "README.md"
-repository = "https://github.com/vitallcore/python-project-83"
-classifiers = [
-    "Framework :: Flask",
-    "Natural Language :: Russian",
-    "Programming Language :: Python :: 3.10"
-]
 packages = [
-  { include = "page_analyzer" },
+    { include = "page_analyzer" },
 ]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 flask = "^3.0.3"
-gunicorn = "^22.0.0"
 python-dotenv = "^1.0.1"
+gunicorn = "^21.2.0"
 psycopg2-binary = "^2.9.9"
-validators = "^0.28.3"
-requests = "^2.32.3"
+validators = "^0.28.0"
+requests = "^2.31.0"
 beautifulsoup4 = "^4.12.3"
+celery = "^5.4.0"
+redis = "^5.0.4"
+
 
 [tool.poetry.group.dev.dependencies]
-flake8 = "^7.1.0"
+flake8 = "^7.0.0"
+pytest = "^8.1.1"
+pytest-cov = "^5.0.0"
+pytest-playwright = "^0.4.4"
 
 [build-system]
 requires = ["poetry-core"]
