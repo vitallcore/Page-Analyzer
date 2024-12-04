@@ -34,3 +34,6 @@ make start
 make dev
 # then open http://localhost:8000 in your browser
 ```
+
+## Demonstration of a project
+You can try out Page Analyzer by clicking [here](https://python-project-83-s5hk.onrender.com/).
