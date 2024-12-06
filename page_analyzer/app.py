@@ -1,28 +1,29 @@
 import os
+from urllib.parse import urlparse
+
 import requests
 from dotenv import load_dotenv
-from urllib.parse import urlparse
-from page_analyzer.url_validator import validate
-from page_analyzer.html_parser import parse_page
-from page_analyzer.tasks import async_check_all_urls
 from flask import (
     Flask,
+    flash,
+    get_flashed_messages,
+    redirect,
     render_template,
     request,
     url_for,
-    redirect,
-    flash,
-    get_flashed_messages,
-)
-from page_analyzer.db import (
-    add_url_to_db,
-    get_url_by_id,
-    get_url_by_name,
-    add_check_to_db,
-    get_checks_desc,
-    get_urls_with_latest_check
 )
 
+from page_analyzer.db import (
+    add_check_to_db,
+    add_url_to_db,
+    get_checks_desc,
+    get_url_by_id,
+    get_url_by_name,
+    get_urls_with_latest_check,
+)
+from page_analyzer.html_parser import parse_page
+from page_analyzer.tasks import async_check_all_urls
+from page_analyzer.url_validator import validate
 
 load_dotenv()
 

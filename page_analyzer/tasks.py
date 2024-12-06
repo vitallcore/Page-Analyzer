@@ -1,7 +1,8 @@
-from page_analyzer.celery_config import celery_app
-from page_analyzer.db import get_urls_with_latest_check, add_check_to_db
-from page_analyzer.html_parser import parse_page
 import requests
+
+from page_analyzer.celery_config import celery_app
+from page_analyzer.db import add_check_to_db, get_urls_with_latest_check
+from page_analyzer.html_parser import parse_page
 
 
 @celery_app.task
