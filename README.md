@@ -1,5 +1,6 @@
 # Page Analyzer
 [![Actions Status](https://github.com/vitallcore/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/vitallcore/python-project-83/actions)
+[![Maintainability](https://api.codeclimate.com/v1/badges/f8404884b3f3bd8c3bf7/maintainability)](https://codeclimate.com/github/vitallcore/python-project-83/maintainability)
 
 ## Description
 Page Analyzer is a simple web application that checks the basic page-level elements of websites valuable for on-page SEO.
