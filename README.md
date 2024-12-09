@@ -15,6 +15,15 @@ Install dependencies using [Poetry](https://python-poetry.org/docs/).
 ```bash
 make install
 ```
+Install and run Redis (it's required for Celery work).
+```bash
+sudo apt install redis
+redis-server
+```
+Run Celery worker.
+```bash
+celery -A page_analyzer.tasks worker --loglevel=info
+```
 Create the new .env file and define SECRET_KEY and DATABASE_URL variables there. For example,
 ```bash
 echo "SECRET_KEY=secret_key" >> .env
