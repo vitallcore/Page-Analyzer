@@ -1,4 +1,5 @@
 import requests
+
 from page_analyzer.html_parser import parse_page
 
 
