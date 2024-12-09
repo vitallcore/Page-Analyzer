@@ -21,7 +21,7 @@ from page_analyzer.db import (
     get_url_by_name,
     get_urls_with_latest_check,
 )
-from page_analyzer.helpers import get_url_status_and_data
+from page_analyzer.html_parser import parse_page
 from page_analyzer.tasks import async_check_all_urls
 from page_analyzer.url_validator import validate
 
@@ -44,6 +44,7 @@ def internal_server_error(e):
 @app.get('/')
 def page_analyzer():
     message = get_flashed_messages(with_categories=True)
+
     return render_template('index.html', message=message)
 
 
@@ -52,6 +53,7 @@ def add_url():
     new_url = request.form.get('url')
 
     error = validate(new_url)
+
     if error:
         flash(f'{error}', 'danger')
         message = get_flashed_messages(with_categories=True)
@@ -60,15 +62,19 @@ def add_url():
     parsed_url = urlparse(new_url)
     normal_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
 
-    url_data = get_url_by_name(normal_url)
-    if url_data:
+    if get_url_by_name(normal_url):
+        old_url_data = get_url_by_name(normal_url)
+
         flash('Страница уже существует', 'primary')
-        return redirect(url_for('show_url', id=url_data[0].id))
+
+        return redirect(url_for('show_url', id=old_url_data[0].id))
 
     add_url_to_db(normal_url)
+
     new_url_data = get_url_by_name(normal_url)
 
     flash('Страница успешно добавлена', 'success')
+
     return redirect(url_for('show_url', id=new_url_data[0].id))
 
 
@@ -82,18 +88,17 @@ def show_all_urls():
 @app.post('/urls/checks')
 def check_all_urls():
     async_check_all_urls.delay()
-    flash('Процесс проверки всех страниц запущен', 'success')
+    flash('Процесс проверки всех страниц запушен', 'success')
+
     return redirect(url_for('show_all_urls'))
 
 
 @app.get('/urls/<int:id>')
 def show_url(id):
     url_data = get_url_by_id(id)
-    if not url_data:
-        return render_template('404.html'), 404
-
     all_checks = get_checks_desc(id)
     message = get_flashed_messages(with_categories=True)
+
     return render_template(
         'url.html',
         url_data=url_data,
@@ -105,14 +110,23 @@ def show_url(id):
 @app.post('/urls/<id>/checks')
 def add_check(id):
     url = get_url_by_id(id)
-    if not url:
-        return render_template('404.html'), 404
 
     try:
-        status_code, page_data = get_url_status_and_data(url[0].name)
-        add_check_to_db(id, status_code, page_data)
-        flash('Страница успешно проверена', 'success')
-    except requests.exceptions.RequestException as e:
-        flash(f'Произошла ошибка при проверке: {str(e)}', 'danger')
+        response = requests.get(url[0].name)
+        response.raise_for_status()
+
+    except requests.exceptions.RequestException:
+
+        flash('Произошла ошибка при проверке', 'danger')
+
+        return redirect(url_for('show_url', id=id))
+
+    status_code = response.status_code
+
+    page_data = parse_page(response.text)
+
+    add_check_to_db(id, status_code, page_data)
+
+    flash('Страница успешно проверена', 'success')
 
     return redirect(url_for('show_url', id=id))
