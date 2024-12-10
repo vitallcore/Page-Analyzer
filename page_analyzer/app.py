@@ -53,7 +53,6 @@ def add_url():
     new_url = request.form.get('url')
 
     error = validate(new_url)
-
     if error:
         flash(f'{error}', 'danger')
         message = get_flashed_messages(with_categories=True)
@@ -62,19 +61,19 @@ def add_url():
     parsed_url = urlparse(new_url)
     normal_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
 
+    # Один запрос к базе вместо двух
     url_data = get_url_by_name(normal_url)
-    if url_data(normal_url):
+    if url_data:
         flash('Страница уже существует', 'primary')
+        # Используем id из результата
+        return redirect(url_for('show_url', id=url_data.id))
 
-        return redirect(url_for('show_url', id=url_data[0].id))
-
+    # Если URL не найден, добавляем его
     add_url_to_db(normal_url)
-
     new_url_data = get_url_by_name(normal_url)
 
     flash('Страница успешно добавлена', 'success')
-
-    return redirect(url_for('show_url', id=new_url_data[0].id))
+    return redirect(url_for('show_url', id=new_url_data.id))
 
 
 @app.get('/urls')

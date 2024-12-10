@@ -32,13 +32,13 @@ def add_url_to_db(url):
 
 
 def get_url_by_name(url):
-    conn = get_connection()
-    query = "SELECT * FROM urls WHERE name = %s"
-    value = (url,)
-
-    url_data = fetch_all(conn, query, value)
-
-    return url_data
+    """
+    Возвращает данные о URL, если он существует в базе.
+    """
+    with psycopg2.connect(DATABASE_URL) as conn:
+        with conn.cursor(cursor_factory=NamedTupleCursor) as cur:
+            cur.execute("SELECT * FROM urls WHERE name = %s", (url,))
+            return cur.fetchone()
 
 
 def get_url_by_id(url_id):
