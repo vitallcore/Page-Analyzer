@@ -1,7 +1,6 @@
 import os
 from urllib.parse import urlparse
 
-import requests
 from dotenv import load_dotenv
 from flask import (
     Flask,
@@ -21,7 +20,7 @@ from page_analyzer.db import (
     get_url_by_name,
     get_urls_with_latest_check,
 )
-from page_analyzer.html_parser import parse_page
+from page_analyzer.helpers import fetch_url_data
 from page_analyzer.tasks import async_check_all_urls
 from page_analyzer.url_validator import validate
 
@@ -110,15 +109,12 @@ def add_check(id):
     if not url:
         return render_template('404.html'), 404
 
-    try:
-        response = requests.get(url[0].name, timeout=10)
-        response.raise_for_status()
+    status_code, page_data = fetch_url_data(url[0].name)
 
-        page_data = parse_page(response.text)
-        add_check_to_db(id, response.status_code, page_data)
-
-        flash('Страница успешно проверена', 'success')
-    except requests.exceptions.RequestException:
+    if status_code == 0:
         flash('Произошла ошибка при проверке', 'danger')
+    else:
+        add_check_to_db(id, status_code, page_data)
+        flash('Страница успешно проверена', 'success')
 
     return redirect(url_for('show_url', id=id))
