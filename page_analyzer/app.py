@@ -62,12 +62,11 @@ def add_url():
     parsed_url = urlparse(new_url)
     normal_url = f"{parsed_url.scheme}://{parsed_url.netloc}"
 
-    if get_url_by_name(normal_url):
-        old_url_data = get_url_by_name(normal_url)
-
+    url_data = get_url_by_name(normal_url)
+    if url_data(normal_url):
         flash('Страница уже существует', 'primary')
 
-        return redirect(url_for('show_url', id=old_url_data[0].id))
+        return redirect(url_for('show_url', id=url_data[0].id))
 
     add_url_to_db(normal_url)
 
