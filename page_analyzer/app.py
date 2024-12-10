@@ -91,9 +91,11 @@ def check_all_urls():
 @app.get('/urls/<int:id>')
 def show_url(id):
     url_data = get_url_by_id(id)
+    if not url_data:
+        return render_template('404.html'), 404
+
     all_checks = get_checks_desc(id)
     message = get_flashed_messages(with_categories=True)
-
     return render_template(
         'url.html',
         url_data=url_data,
@@ -105,23 +107,18 @@ def show_url(id):
 @app.post('/urls/<id>/checks')
 def add_check(id):
     url = get_url_by_id(id)
+    if not url:
+        return render_template('404.html'), 404
 
     try:
-        response = requests.get(url[0].name)
+        response = requests.get(url[0].name, timeout=10)
         response.raise_for_status()
 
+        page_data = parse_page(response.text)
+        add_check_to_db(id, response.status_code, page_data)
+
+        flash('Страница успешно проверена', 'success')
     except requests.exceptions.RequestException:
-
         flash('Произошла ошибка при проверке', 'danger')
-
-        return redirect(url_for('show_url', id=id))
-
-    status_code = response.status_code
-
-    page_data = parse_page(response.text)
-
-    add_check_to_db(id, status_code, page_data)
-
-    flash('Страница успешно проверена', 'success')
 
     return redirect(url_for('show_url', id=id))
