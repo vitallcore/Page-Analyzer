@@ -19,3 +19,6 @@ lint:
 
 test:
 	poetry run pytest
+
+check:
+	ruff check --fix --select I
