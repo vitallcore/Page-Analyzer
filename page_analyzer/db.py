@@ -44,7 +44,8 @@ def add_check_to_db(url_id, status_code, page_data):
         with conn.cursor() as cur:
             cur.execute(
                 """
-                INSERT INTO url_checks (url_id, status_code, h1, title, description)
+                INSERT INTO url_checks (
+                url_id, status_code, h1, title, description)
                 VALUES (%s, %s, %s, %s, %s)
                 """,
                 (url_id, status_code,
